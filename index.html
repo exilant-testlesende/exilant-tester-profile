@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Testlesenden Buchfragebogen</title>
+  <meta name="description" content="Buchfragebogen für Testlesende" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-2: #eef2f8;
+      --text: #18202f;
+      --muted: #5f6c81;
+      --border: #d7dfeb;
+      --accent: #7c3aed;
+      --accent-2: #a855f7;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --shadow: 0 18px 60px rgba(19, 27, 44, 0.12);
+      --radius: 22px;
+      --field: #ffffff;
+      --field-text: #18202f;
+      --focus: 0 0 0 4px rgba(124, 58, 237, 0.22);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0d1017;
+      --panel: #151a24;
+      --panel-2: #10141d;
+      --text: #f3f6fb;
+      --muted: #a6b0c2;
+      --border: #2a3140;
+      --accent: #a78bfa;
+      --accent-2: #c084fc;
+      --danger: #fb7185;
+      --success: #86efac;
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
+      --field: #0f1420;
+      --field-text: #f3f6fb;
+      --focus: 0 0 0 4px rgba(167, 139, 250, 0.24);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.22), transparent 34rem),
+        radial-gradient(circle at top right, rgba(192, 132, 252, 0.16), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent-2); }
+
+    .page {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 58px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--panel) 92%, transparent), color-mix(in srgb, var(--panel-2) 92%, transparent));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 8px);
+      padding: clamp(24px, 4vw, 44px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: -100px;
+      border-radius: 999px;
+      background: rgba(167, 139, 250, 0.16);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--accent-2);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    h1 {
+      margin: 10px 0 14px;
+      font-size: clamp(2rem, 6vw, 4.35rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.5rem, 3vw, 2.35rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.14rem);
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--panel-2) 82%, transparent);
+      border-radius: 16px;
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    form {
+      margin-top: 26px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: color-mix(in srgb, var(--panel) 96%, transparent);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(18px, 3vw, 26px);
+      box-shadow: var(--shadow);
+    }
+
+    .toc-card { scroll-margin-top: 18px; }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .toc-link {
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--field);
+      padding: 12px 14px;
+      font-weight: 800;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    .toc-link:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .question {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+      background: color-mix(in srgb, var(--panel-2) 40%, transparent);
+    }
+
+    .section-card { scroll-margin-top: 18px; }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-kicker {
+      color: var(--accent-2);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 900;
+      margin: 0 0 5px;
+    }
+
+    .back-link {
+      white-space: nowrap;
+      align-self: center;
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 850;
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: color-mix(in srgb, var(--field) 82%, transparent);
+    }
+
+    @media (max-width: 720px) {
+      .grid-2, .toc-grid { grid-template-columns: 1fr; }
+      .page { width: min(100% - 22px, 980px); padding-top: 16px; }
+      .section-header { display: block; }
+      .back-link { display: inline-flex; margin-top: 10px; }
+    }
+
+    label, legend {
+      display: block;
+      font-weight: 800;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .hint {
+      margin: -4px 0 12px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .small-muted {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin: 8px 0 0;
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--field);
+      color: var(--field-text);
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    textarea {
+      min-height: 118px;
+      resize: vertical;
+    }
+
+    textarea.compact { min-height: 72px; }
+
+    textarea:focus,
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus);
+    }
+
+    .scale-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .scale-value {
+      min-width: 54px;
+      text-align: center;
+      border-radius: 14px;
+      padding: 8px 10px;
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+      color: var(--text);
+      font-weight: 900;
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .range-scale {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .option-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 620px) {
+      .option-grid.two { grid-template-columns: 1fr; }
+    }
+
+    .option-card {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--border);
+      background: var(--field);
+      border-radius: 16px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    .option-card input { margin-top: 5px; accent-color: var(--accent); }
+
+    .actions {
+      position: sticky;
+      bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      padding: 14px;
+      background: color-mix(in srgb, var(--panel) 82%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      z-index: 5;
+    }
+
+    button,
+    .button-link {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 850;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 160ms ease, filter 160ms ease, border-color 160ms ease;
+    }
+
+    button:hover,
+    .button-link:hover { transform: translateY(-1px); }
+    button:active,
+    .button-link:active { transform: translateY(0); }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #ffffff;
+    }
+
+    .secondary {
+      background: var(--field);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .danger {
+      color: var(--danger);
+      background: transparent;
+      border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border));
+    }
+
+    .footer-card {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .thanks {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .status {
+      min-height: 1.4em;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    .side-dock {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      display: grid;
+      gap: 10px;
+      justify-items: end;
+    }
+
+    .dock-toggle {
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .dock-panel {
+      width: min(280px, calc(100vw - 36px));
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      backdrop-filter: blur(16px);
+      border-radius: 22px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 10px;
+      transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+    }
+
+    .side-dock.collapsed .dock-panel {
+      opacity: 0;
+      transform: translateX(14px);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .dock-title {
+      margin: 4px 6px 0;
+      color: var(--muted);
+      font-weight: 850;
+      font-size: 0.9rem;
+    }
+
+    .dock-link {
+      width: 100%;
+      justify-content: flex-start;
+      border-radius: 16px;
+      padding: 11px 13px;
+    }
+
+    .dock-link small {
+      display: block;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    @media (max-width: 900px) {
+      .side-dock {
+        right: 12px;
+        bottom: 82px;
+        top: auto;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .actions {
+        border-radius: 24px;
+      }
+      .actions button { flex: 1 1 100%; }
+      .side-dock { bottom: 176px; }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <aside class="side-dock" id="sideDock" aria-label="Schnellzugriff">
+    <button class="dock-toggle secondary" type="button" id="dockToggle" aria-expanded="true" aria-controls="dockPanel">Links einklappen</button>
+    <nav class="dock-panel" id="dockPanel" aria-label="Projektlinks">
+      <p class="dock-title">Projektlinks</p>
+      <a class="button-link secondary dock-link" href="https://docs.google.com/document/d/1baPm4DijgFu9L_EEZQ7VqKnegwVh__ShJQclXvAHO-4/edit?tab=t.0" target="_blank" rel="noopener">Alpha-Manuskript <small>Google Docs öffnen</small></a>
+      <a class="button-link secondary dock-link" href="https://www.youtube.com/watch?v=ob-mA_KelhQ&list=PL9-f2d5gbuNCxBQFJpf-3Jx2s24_xJNhV&index=2&t=7s" target="_blank" rel="noopener">Hörbuch <small>YouTube-Playlist öffnen</small></a>
+      <a class="button-link secondary dock-link" href="https://exilant-testlesende.github.io/exilant-feedback/" target="_blank" rel="noopener">Kapitelbewertung <small>Zum Kapitel-Fragebogen</small></a>
+      <a class="button-link secondary dock-link" href="https://exilant-testlesende.github.io/exilant-tester-profile1/" target="_blank" rel="noopener">Profilfragen <small>Falls noch nicht beantwortet</small></a>
+    </nav>
+  </aside>
+
+  <main class="page">
+    <div class="topbar">
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Dark Mode umschalten">🌙 Dark Mode</button>
+    </div>
+
+    <section class="hero" aria-labelledby="pageTitle">
+      <span class="eyebrow">Testlesenden-Buchfragebogen</span>
+      <h1 id="pageTitle">Buchfragebogen</h1>
+      <p class="intro">
+        Noch einmal vielen Dank, dass du an diesem Projekt mitwirkst. Das ist nicht selbstverständlich, und ich weiß deine Unterstützung sehr zu schätzen.
+        Kommen wir nun zum letzten wichtigen Teil: dem Buchfragebogen.
+      </p>
+      <div class="notice">
+        Auch wenn du das Buch nicht vollständig gelesen haben solltest, würde ich mich freuen, wenn du diesen Bogen trotzdem ausfüllst. Deine Rückmeldung hilft mir enorm dabei, aus dem Alpha-Manuskript eine druckreife Fassung zu entwickeln.<br /><br />
+        Bitte trage die Werte ein, die du ehrlich für richtig hältst – nicht die, von denen du glaubst, dass sie mir gefallen könnten. Es geht mir beim Feedback nicht um Lob, sondern um ehrliche Erkenntnisse.
+      </div>
+      <div class="footer-actions" aria-label="Schnelllinks oben">
+        <a class="button-link primary" href="https://exilant-testlesende.github.io/exilant-feedback/" target="_blank" rel="noopener">Kapitelbewertung öffnen</a>
+        <a class="button-link secondary" href="https://exilant-testlesende.github.io/exilant-tester-profile/" target="_blank" rel="noopener">Profilfragen öffnen</a>
+      </div>
+    </section>
+
+    <form id="bookForm" autocomplete="on">
+      <section class="card grid-2" aria-label="Kontaktangaben" data-section="Kontaktangaben">
+        <div class="question">
+          <label for="name">Dein Name</label>
+          <input id="name" name="Name" data-label="Dein Name" type="text" placeholder="Dein Name oder Kürzel" />
+        </div>
+        <div class="question">
+          <label for="contact">Kontaktmöglichkeit <span class="hint">(optional)</span></label>
+          <input id="contact" name="Kontakt" data-label="Kontaktmöglichkeit" type="text" placeholder="E-Mail, WhatsApp oder leer lassen" />
+        </div>
+      </section>
+
+      <section class="card toc-card" id="toc" aria-label="Inhaltsverzeichnis">
+        <h2>Inhaltsverzeichnis</h2>
+        <p class="intro">Spring direkt zu einem Abschnitt. Nach jedem Teil kommst du wieder hierher zurück.</p>
+        <div class="toc-grid">
+          <a class="toc-link" href="#teil-a">Teil A – Allgemeines</a>
+          <a class="toc-link" href="#teil-b">Teil B – Figuren</a>
+          <a class="toc-link" href="#teil-c">Teil C – Sprache / Stil / Lesbarkeit</a>
+          <a class="toc-link" href="#teil-d">Teil D – Welt / Setting</a>
+          <a class="toc-link" href="#teil-e">Teil E – Wirkung & Struktur</a>
+          <a class="toc-link" href="#teil-f">Teil F – Markt / Positionierung</a>
+          <a class="toc-link" href="#teil-g">Teil G – Extra</a>
+          <a class="toc-link" href="#teil-h">Teil H – Bonusdaten</a>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-a" data-section="TEIL A - Allgemeines">
+        <div class="section-header">
+          <div>
+            <p class="section-kicker">Teil A</p>
+            <h2>Allgemeines</h2>
+          </div>
+          <a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a>
+        </div>
+        <div class="question-list">
+          <fieldset class="question">
+            <legend>1. Wie weit hast du gelesen?</legend>
+            <p class="hint">Max. 1 auswählen.</p>
+            <div class="option-grid two">
+              <label class="option-card"><input type="radio" name="Wie weit gelesen" value="Prolog" /> Prolog</label>
+              <label class="option-card"><input type="radio" name="Wie weit gelesen" value="Kapitel 1–5" /> Kapitel 1–5</label>
+              <label class="option-card"><input type="radio" name="Wie weit gelesen" value="Kapitel 6–15" /> Kapitel 6–15</label>
+              <label class="option-card"><input type="radio" name="Wie weit gelesen" value="Kapitel 16–30" /> Kapitel 16–30</label>
+              <label class="option-card"><input type="radio" name="Wie weit gelesen" value="Kapitel 30–ganz gelesen" /> Kapitel 30–ganz gelesen</label>
+            </div>
+          </fieldset>
+          <div class="question range-question"><label for="a2">2. Wie gern hast du das Buch / Teile davon gelesen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="a2" name="Wie gern gelesen" data-label="2. Wie gern hast du das Buch / Teile davon gelesen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="a2">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="a3">3. Wie emotional hat dich das Buch berührt?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="a3" name="Emotionale Berührung" data-label="3. Wie emotional hat dich das Buch berührt?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="a3">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="a4">4. Wie verständlich war das Buch insgesamt?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="a4" name="Verständlichkeit insgesamt" data-label="4. Wie verständlich war das Buch insgesamt?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="a4">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="a5">5. Wie originell wirkte das Buch auf dich?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="a5" name="Originalität" data-label="5. Wie originell wirkte das Buch auf dich?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="a5">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <fieldset class="question"><legend>6. Würdest du Band 2 lesen?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Band 2 lesen" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Band 2 lesen" value="N" /> N für nein</label></div></fieldset>
+          <fieldset class="question"><legend>7. Würdest du das Buch weiterempfehlen?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Buch weiterempfehlen" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Buch weiterempfehlen" value="N" /> N für nein</label></div></fieldset>
+          <fieldset class="question"><legend>8. Würdest du das Buch noch einmal lesen?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Buch noch einmal lesen" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Buch noch einmal lesen" value="N" /> N für nein</label></div></fieldset>
+          <fieldset class="question"><legend>9. Hat das Buch deine Sicht auf bestimmte Themen beeinflusst?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Sicht auf Themen beeinflusst" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Sicht auf Themen beeinflusst" value="N" /> N für nein</label></div></fieldset>
+          <div class="question range-question"><label for="a10">10. Objektive Gesamtbewertung des Buches in einer Zahl</label><p class="hint">0–10 | 10 = sehr gut</p><div class="scale-row"><input id="a10" name="Objektive Gesamtbewertung" data-label="10. Objektive Gesamtbewertung des Buches" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="a10">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <fieldset class="question"><legend>11. Kann dieses Werk deiner Meinung nach mit Werken auf dem Markt mithalten?</legend><p class="hint">Extra</p><div class="option-grid two"><label class="option-card"><input type="radio" name="Kann mit Markt mithalten" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Kann mit Markt mithalten" value="N" /> N für nein</label></div></fieldset>
+          <fieldset class="question"><legend>12. Hat dich das Buch gedanklich gefordert?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Gedanklich gefordert" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Gedanklich gefordert" value="N" /> N für nein</label></div></fieldset>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-b" data-section="TEIL B - Figuren">
+        <div class="section-header"><div><p class="section-kicker">Teil B</p><h2>Figuren</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <div class="question"><label for="b1">1. Welche Figur fandest du insgesamt am interessantesten?</label><textarea class="compact" id="b1" name="Interessanteste Figur" data-label="1. Welche Figur fandest du insgesamt am interessantesten?" placeholder="Name …"></textarea></div>
+          <div class="question"><label for="b2">2. Welche Figur hat dich emotional am meisten bewegt?</label><textarea class="compact" id="b2" name="Emotional bewegendste Figur" data-label="2. Welche Figur hat dich emotional am meisten bewegt?" placeholder="Name …"></textarea></div>
+          <div class="question"><label for="b3">3. Gab es eine oder mehrere Figuren, die dich eher genervt haben?</label><p class="hint">Optional.</p><textarea class="compact" id="b3" name="Nervige Figuren" data-label="3. Gab es eine oder mehrere Figuren, die dich eher genervt haben?" placeholder="Name / optional …"></textarea></div>
+          <div class="question range-question"><label for="b4">4. Wie haben dir die Namen der Figuren gefallen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="b4" name="Figurennamen gefallen" data-label="4. Wie haben dir die Namen der Figuren gefallen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="b4">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="b5">5. Wie plausibel / authentisch haben die Hauptfiguren insgesamt gehandelt?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="b5" name="Plausibilität Hauptfiguren" data-label="5. Wie plausibel / authentisch haben die Hauptfiguren insgesamt gehandelt?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="b5">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <fieldset class="question"><legend>6. Haben dich Figuren inspiriert?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Figuren inspiriert" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Figuren inspiriert" value="N" /> N für nein</label></div></fieldset>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-c" data-section="TEIL C - Sprache / Stil / Lesbarkeit">
+        <div class="section-header"><div><p class="section-kicker">Teil C</p><h2>Sprache / Stil / Lesbarkeit</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <div class="question range-question"><label for="c1">1. Wie angenehm ließ sich das Buch lesen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="c1" name="Angenehm zu lesen" data-label="1. Wie angenehm ließ sich das Buch lesen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="c1">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="c2">2. Wie stark hat dir der Schreibstil gefallen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="c2" name="Schreibstil gefallen" data-label="2. Wie stark hat dir der Schreibstil gefallen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="c2">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="c3">3. Wie klar und verständlich waren die Sätze insgesamt?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="c3" name="Satzklarheit" data-label="3. Wie klar und verständlich waren die Sätze insgesamt?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="c3">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="c4">4. Wie bildhaft konntest du dir Szenen vorstellen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="c4" name="Bildhaftigkeit der Szenen" data-label="4. Wie bildhaft konntest du dir Szenen vorstellen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="c4">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-d" data-section="TEIL D - Welt / Setting">
+        <div class="section-header"><div><p class="section-kicker">Teil D</p><h2>Welt / Setting</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <div class="question range-question"><label for="d1">1. Wie interessant fandest du die Welt des Buches?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="d1" name="Interesse an der Welt" data-label="1. Wie interessant fandest du die Welt des Buches?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="d1">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="d2">2. Wie verständlich war die Welt / politische Lage / das Setting?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="d2" name="Verständlichkeit Welt und Setting" data-label="2. Wie verständlich war die Welt / politische Lage / das Setting?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="d2">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <fieldset class="question"><legend>3. Hättest du gern mehr über die Welt im Buch erfahren?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Mehr über Welt erfahren" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Mehr über Welt erfahren" value="N" /> N für nein</label></div></fieldset>
+          <div class="question range-question"><label for="d4">4. Wie realistisch und plausibel hast du die Welt als ganze empfunden?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="d4" name="Realismus und Plausibilität der Welt" data-label="4. Wie realistisch und plausibel hast du die Welt als ganze empfunden?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="d4">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-e" data-section="TEIL E - Wirkung & Struktur">
+        <div class="section-header"><div><p class="section-kicker">Teil E</p><h2>Wirkung & Struktur</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <fieldset class="question" data-max-group="2">
+            <legend>1. Welche Stärke hatte das Buch am meisten?</legend>
+            <p class="hint">Max. 2 auswählen.</p>
+            <div class="option-grid two">
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Figuren" /> Figuren</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Atmosphäre" /> Atmosphäre</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Emotionen" /> Emotionen</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Spannung" /> Spannung</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Ideen / Welt" /> Ideen / Welt</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Realismus" /> Realismus</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Sprache" /> Sprache</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Dialoge" /> Dialoge</label>
+              <label class="option-card"><input type="checkbox" name="Stärkste Stärken" value="Sonstiges" /> Sonstiges</label>
+            </div>
+          </fieldset>
+          <fieldset class="question" data-max-group="2">
+            <legend>2. Größte Schwäche?</legend>
+            <p class="hint">Max. 2 auswählen.</p>
+            <div class="option-grid two">
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Tempo zu schnell oder zu oszillierend" /> Tempo zu schnell oder zu oszillierend</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Verwirrung" /> Verwirrung</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Zu langatmig" /> Zu langatmig</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Bindung zu den Figuren fehlte" /> Bindung zu den Figuren fehlte</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Sprache holprig" /> Sprache holprig</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Zu hart / explizit" /> Zu hart / explizit</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Zu wenig Spannung" /> Zu wenig Spannung</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Welt unklar" /> Welt unklar</label>
+              <label class="option-card"><input type="checkbox" name="Größte Schwächen" value="Sonstiges" /> Sonstiges</label>
+            </div>
+          </fieldset>
+          <fieldset class="question">
+            <legend>3. Gab es Stellen, an denen du fast aufgehört hast zu lesen oder aufgehört hast?</legend>
+            <div class="option-grid two">
+              <label class="option-card"><input type="radio" name="Fast aufgehört" value="Nein" /> Nein</label>
+              <label class="option-card"><input type="radio" name="Fast aufgehört" value="Ja" /> Ja</label>
+            </div>
+            <label for="e3details" style="margin-top:14px;">Falls ja: Welche Stelle und warum?</label>
+            <p class="hint">Kapitel + Seiten-Nr. oder kurz Inhalt beschreiben. Ein Wort als Grund reicht.</p>
+            <textarea id="e3details" name="Fast aufgehört Details" data-label="3. Falls ja: Welche Stelle und warum?" placeholder="Kapitel / Seite / Inhalt / Grund …"></textarea>
+          </fieldset>
+          <div class="question"><label for="e4">4. Gab es Kapitel, die besonders stark waren?</label><textarea class="compact" id="e4" name="Besonders starke Kapitel" data-label="4. Gab es Kapitel, die besonders stark waren?" placeholder="Kapitel Nr. …"></textarea></div>
+          <div class="question"><label for="e5">5. Gab es Kapitel, die schwächer waren?</label><textarea class="compact" id="e5" name="Schwächere Kapitel" data-label="5. Gab es Kapitel, die schwächer waren?" placeholder="Kapitel Nr. …"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-f" data-section="TEIL F - Markt / Positionierung">
+        <div class="section-header"><div><p class="section-kicker">Teil F</p><h2>Markt / Positionierung</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <fieldset class="question"><legend>1. Würdest du für dieses Buch Geld bezahlen?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Für Buch Geld bezahlen" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Für Buch Geld bezahlen" value="N" /> N für nein</label></div></fieldset>
+          <fieldset class="question">
+            <legend>2. Zu welcher Zielgruppe passt das Buch eher?</legend>
+            <p class="hint">Mehrfachauswahl möglich.</p>
+            <div class="option-grid two">
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Jugendliche" /> Jugendliche</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Junge Erwachsene" /> Junge Erwachsene</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Erwachsene" /> Erwachsene</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Literarisches Publikum" /> Literarisches Publikum</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Mainstream" /> Mainstream</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Nische" /> Nische</label>
+              <label class="option-card"><input type="checkbox" name="Zielgruppe" value="Schwer einzuordnen" /> Schwer einzuordnen</label>
+            </div>
+          </fieldset>
+          <div class="question"><label for="f3">3. An welches dir bekannte Werk erinnert dich das Buch am ehesten?</label><p class="hint">Buch / Film / Serie. Extra.</p><textarea id="f3" name="Erinnert an Werk" data-label="3. An welches bekannte Werk erinnert dich das Buch am ehesten?" placeholder="Deine Antwort …"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-g" data-section="TEIL G - Extra">
+        <div class="section-header"><div><p class="section-kicker">Teil G</p><h2>Extra</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <div class="question"><label for="g1">1. Was ist dir am meisten im Kopf geblieben?</label><textarea id="g1" name="Am meisten im Kopf geblieben" data-label="1. Was ist dir am meisten im Kopf geblieben?" placeholder="Deine Antwort …"></textarea></div>
+          <div class="question"><label for="g2">2. Was sollte unbedingt verbessert werden?</label><textarea id="g2" name="Unbedingt verbessern" data-label="2. Was sollte unbedingt verbessert werden?" placeholder="Deine Antwort …"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="teil-h" data-section="TEIL H - Bonusdaten">
+        <div class="section-header"><div><p class="section-kicker">Teil H</p><h2>Bonusdaten</h2></div><a class="back-link" href="#toc">Zurück zum Inhaltsverzeichnis</a></div>
+        <div class="question-list">
+          <div class="question"><label for="h1">1. Dein Alter</label><p class="hint">Freiwillig.</p><input id="h1" name="Alter" data-label="1. Dein Alter" type="text" placeholder="Optional …" /></div>
+          <div class="question"><label for="h2">2. Dein Geschlecht</label><p class="hint">Freiwillig.</p><input id="h2" name="Geschlecht" data-label="2. Dein Geschlecht" type="text" placeholder="Optional …" /></div>
+          <div class="question range-question"><label for="h3">3. Liest du normalerweise viele Bücher / Hörbücher?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="h3" name="Liest viele Bücher oder Hörbücher" data-label="3. Liest du normalerweise viele Bücher / Hörbücher?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="h3">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <fieldset class="question"><legend>4. Darf ich dich in Zukunft für weitere Literaturprojekte von mir als Testperson in Betracht ziehen?</legend><div class="option-grid two"><label class="option-card"><input type="radio" name="Weitere Literaturprojekte Testperson" value="J" /> J für ja</label><label class="option-card"><input type="radio" name="Weitere Literaturprojekte Testperson" value="N" /> N für nein</label></div></fieldset>
+          <div class="question range-question"><label for="h5">5. Wie sehr hat dir die Struktur fürs Testlesen & Bewerten gefallen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="h5" name="Struktur Testlesen und Bewerten" data-label="5. Wie sehr hat dir die Struktur fürs Testlesen & Bewerten gefallen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="h5">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question range-question"><label for="h6">6. Wie haben dir Stil und Design fürs Testlesen gefallen?</label><p class="hint">0–10 | 10 = sehr</p><div class="scale-row"><input id="h6" name="Stil und Design Testlesen" data-label="6. Wie haben dir Stil und Design fürs Testlesen gefallen?" type="range" min="0" max="10" step="1" value="5" /><output class="scale-value" for="h6">5</output></div><div class="range-scale"><span>0</span><span>10</span></div></div>
+          <div class="question"><label for="h7">7. Hast du weitere Anmerkungen und Kritik bezogen auf Dokumentenstruktur, Organisation & Fragebögen?</label><textarea id="h7" name="Anmerkungen Dokumentenstruktur Organisation Fragebögen" data-label="7. Weitere Anmerkungen und Kritik zu Dokumentenstruktur, Organisation & Fragebögen" placeholder="Deine Antwort …"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card footer-card" data-section="Abschluss">
+        <p class="thanks">
+          Vielen Dank an Margarita und Dominik fürs Gegenlesen.
+        </p>
+        <div class="footer-actions" aria-label="Schnelllinks unten">
+          <a class="button-link primary" href="https://exilant-testlesende.github.io/exilant-feedback/" target="_blank" rel="noopener">Kapitelbewertung öffnen</a>
+          <a class="button-link secondary" href="https://exilant-testlesende.github.io/exilant-tester-profile/" target="_blank" rel="noopener">Profilfragen öffnen</a>
+          <a class="button-link secondary" href="https://docs.google.com/document/d/1baPm4DijgFu9L_EEZQ7VqKnegwVh__ShJQclXvAHO-4/edit?tab=t.0" target="_blank" rel="noopener">Alpha-Manuskript öffnen</a>
+          <a class="button-link secondary" href="https://www.youtube.com/watch?v=ob-mA_KelhQ&list=PL9-f2d5gbuNCxBQFJpf-3Jx2s24_xJNhV&index=2&t=7s" target="_blank" rel="noopener">Hörbuch öffnen</a>
+        </div>
+        <p>
+          Danke, dass du dir die Zeit genommen hast, den Buchfragebogen ehrlich auszufüllen.
+        </p>
+      </section>
+
+      <div class="actions" aria-label="Aktionen">
+        <button class="primary" type="button" id="sendMailButton">Per Mail senden</button>
+        <button class="secondary" type="button" id="copyButton">In Zwischenablage kopieren</button>
+        <button class="danger" type="reset">Zurücksetzen</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    (function () {
+      const FORM_STORAGE_KEY = "testlesenden-buchfragebogen";
+      const THEME_STORAGE_KEY = "testlesenden-buch-theme";
+      const DOCK_STORAGE_KEY = "testlesenden-buch-dock";
+      const recipient = "dario.exilant@gmail.com";
+      const mailSubject = "Testlesenden Buchfragebogen";
+
+      const form = document.getElementById("bookForm");
+      const statusEl = document.getElementById("status");
+      const themeToggle = document.getElementById("themeToggle");
+      const sendMailButton = document.getElementById("sendMailButton");
+      const copyButton = document.getElementById("copyButton");
+      const sideDock = document.getElementById("sideDock");
+      const dockToggle = document.getElementById("dockToggle");
+
+      function setStatus(message) {
+        statusEl.textContent = message;
+        if (message) {
+          window.setTimeout(function () {
+            if (statusEl.textContent === message) statusEl.textContent = "";
+          }, 5200);
+        }
+      }
+
+      function setTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        themeToggle.textContent = theme === "dark" ? "🌙 Dark Mode" : "☀️ Light Mode";
+        localStorage.setItem(THEME_STORAGE_KEY, theme);
+      }
+
+      setTheme(localStorage.getItem(THEME_STORAGE_KEY) || "dark");
+
+      themeToggle.addEventListener("click", function () {
+        const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        setTheme(nextTheme);
+      });
+
+      function setDock(collapsed) {
+        sideDock.classList.toggle("collapsed", collapsed);
+        dockToggle.textContent = collapsed ? "Links ausklappen" : "Links einklappen";
+        dockToggle.setAttribute("aria-expanded", String(!collapsed));
+        localStorage.setItem(DOCK_STORAGE_KEY, collapsed ? "collapsed" : "open");
+      }
+
+      setDock(localStorage.getItem(DOCK_STORAGE_KEY) === "collapsed");
+
+      dockToggle.addEventListener("click", function () {
+        setDock(!sideDock.classList.contains("collapsed"));
+      });
+
+      function updateRangeOutput(range) {
+        const output = range.parentElement.querySelector("output");
+        if (output) output.value = range.value;
+      }
+
+      form.querySelectorAll('input[type="range"]').forEach(function (range) {
+        updateRangeOutput(range);
+        range.addEventListener("input", function () {
+          updateRangeOutput(range);
+        });
+      });
+
+      form.querySelectorAll("fieldset[data-max-group]").forEach(function (fieldset) {
+        const max = Number(fieldset.dataset.maxGroup || "0");
+        const boxes = Array.from(fieldset.querySelectorAll('input[type="checkbox"]'));
+        boxes.forEach(function (box) {
+          box.addEventListener("change", function () {
+            const checked = boxes.filter(function (item) { return item.checked; });
+            if (checked.length > max) {
+              box.checked = false;
+              setStatus("Hier sind maximal " + max + " Antworten möglich.");
+            }
+          });
+        });
+      });
+
+      function labelForElement(el) {
+        if (el.dataset.label) return el.dataset.label;
+        const question = el.closest(".question");
+        if (question) {
+          const legend = question.querySelector("legend");
+          if (legend) return legend.textContent.trim();
+          const label = question.querySelector('label[for="' + CSS.escape(el.id || "") + '"]') || question.querySelector("label");
+          if (label) return label.textContent.replace(/\s+/g, " ").trim();
+        }
+        return el.name;
+      }
+
+      function serializeForm() {
+        const data = new FormData(form);
+        const lines = [
+          "Testlesenden Buchfragebogen",
+          "============================",
+          ""
+        ];
+
+        const handledGroups = new Set();
+        let currentSection = "";
+
+        Array.from(form.elements).forEach(function (el) {
+          if (!el.name || el.type === "button" || el.type === "reset" || el.type === "submit") return;
+          if ((el.type === "radio" || el.type === "checkbox") && handledGroups.has(el.name)) return;
+
+          const section = el.closest("[data-section]");
+          const sectionName = section ? section.dataset.section : "Weitere Angaben";
+          if (sectionName !== currentSection) {
+            currentSection = sectionName;
+            lines.push("--- " + currentSection + " ---");
+            lines.push("");
+          }
+
+          if (el.type === "radio") {
+            handledGroups.add(el.name);
+            lines.push(labelForElement(el) + ":");
+            lines.push(data.get(el.name) || "Keine Angabe");
+            lines.push("");
+            return;
+          }
+
+          if (el.type === "checkbox") {
+            handledGroups.add(el.name);
+            const values = data.getAll(el.name).filter(Boolean);
+            lines.push(labelForElement(el) + ":");
+            lines.push(values.length ? values.join(", ") : "Keine Angabe");
+            lines.push("");
+            return;
+          }
+
+          const value = data.get(el.name);
+          lines.push(labelForElement(el) + ":");
+          lines.push(value && String(value).trim() ? String(value).trim() : "Keine Angabe");
+          lines.push("");
+        });
+
+        return lines.join("\n");
+      }
+
+      function saveForm() {
+        const data = {};
+        Array.from(form.elements).forEach(function (el) {
+          if (!el.name) return;
+          if (el.type === "radio") {
+            if (el.checked) data[el.name] = el.value;
+          } else if (el.type === "checkbox") {
+            if (!data[el.name]) data[el.name] = [];
+            if (el.checked) data[el.name].push(el.value);
+          } else if (el.type !== "button" && el.type !== "reset" && el.type !== "submit") {
+            data[el.name] = el.value;
+          }
+        });
+        localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function restoreForm() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(FORM_STORAGE_KEY) || "{}");
+          Object.entries(saved).forEach(function ([name, value]) {
+            const elements = form.querySelectorAll('[name="' + CSS.escape(name) + '"]');
+            elements.forEach(function (el) {
+              if (el.type === "radio") {
+                el.checked = el.value === value;
+              } else if (el.type === "checkbox") {
+                el.checked = Array.isArray(value) && value.includes(el.value);
+              } else {
+                el.value = value;
+              }
+              if (el.type === "range") updateRangeOutput(el);
+            });
+          });
+        } catch (error) {
+          console.warn("Formulardaten konnten nicht wiederhergestellt werden.", error);
+        }
+      }
+
+      restoreForm();
+      form.addEventListener("input", saveForm);
+      form.addEventListener("change", saveForm);
+
+      sendMailButton.addEventListener("click", function () {
+        const body = serializeForm();
+        const mailtoUrl = "mailto:" + encodeURIComponent(recipient) +
+          "?subject=" + encodeURIComponent(mailSubject) +
+          "&body=" + encodeURIComponent(body);
+        window.location.href = mailtoUrl;
+        setStatus("Mail-Entwurf wurde geöffnet. Falls nichts passiert oder der Text zu lang ist, nutze bitte zusätzlich ›In Zwischenablage kopieren‹.");
+      });
+
+      copyButton.addEventListener("click", async function () {
+        const body = serializeForm();
+        try {
+          await navigator.clipboard.writeText(body);
+          setStatus("Antworten wurden in die Zwischenablage kopiert.");
+        } catch (error) {
+          const temp = document.createElement("textarea");
+          temp.value = body;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          temp.remove();
+          setStatus("Antworten wurden kopiert.");
+        }
+      });
+
+      form.addEventListener("reset", function () {
+        window.setTimeout(function () {
+          localStorage.removeItem(FORM_STORAGE_KEY);
+          form.querySelectorAll('input[type="range"]').forEach(updateRangeOutput);
+          setStatus("Formular wurde zurückgesetzt.");
+        }, 0);
+      });
+    })();
+  </script>
+</body>
+</html>
